@@ -1,4 +1,3 @@
-// src/screens/LoginScreen.js
 import React, {useState} from 'react';
 import {
   View,
@@ -9,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+
 import {authenticateUser} from '../utils/auth';
 const LoginScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 20,
     padding: 10,
-    borderRadius: 10, // Rounded corners
+    borderRadius: 10,
     backgroundColor: 'white',
   },
   loginButton: {
