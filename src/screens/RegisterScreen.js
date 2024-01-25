@@ -14,16 +14,14 @@ import {format} from 'date-fns';
 const RegisterScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [dob, setDOB] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
 
   const [usernameTouched, setUsernameTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
-  const [dobTouched, setDOBTouched] = useState(false);
   const [mobileNumberTouched, setMobileNumberTouched] = useState(false);
 
   const handleRegister = () => {
-    if (!username || !password || !dob || !mobileNumber) {
+    if (!username || !password || !mobileNumber) {
       Alert.alert('Registration Failed', 'All fields are mandatory.');
 
       setUsernameTouched(true);
@@ -33,10 +31,9 @@ const RegisterScreen = ({navigation}) => {
       return;
     }
 
-    const formattedDOB = format(new Date(dob), 'dd MMMM yyyy');
     Alert.alert(
       'Registration Completed',
-      `You have successfully registered!\nDOB: ${formattedDOB}`,
+      `You have successfully registered!\nMobile Number: ${mobileNumber}`,
     );
     navigation.navigate('Login');
   };
@@ -76,19 +73,14 @@ const RegisterScreen = ({navigation}) => {
           onChangeText={text => setPassword(text)}
           onBlur={() => setPasswordTouched(true)}
         />
-        <TextInput
-          style={[styles.input, !dob && dobTouched && styles.errorInput]}
-          placeholder="Date of Birth (dd/mm/yyyy)"
-          value={dob}
-          onChangeText={text => setDOB(text)}
-          onBlur={() => setDOBTouched(true)}
-        />
+
         <TextInput
           style={[
             styles.input,
             !mobileNumber && mobileNumberTouched && styles.errorInput,
           ]}
           placeholder="Mobile Number"
+          keyboardType="numeric"
           value={mobileNumber}
           onChangeText={text => setMobileNumber(text)}
           onBlur={() => setMobileNumberTouched(true)}
@@ -108,6 +100,7 @@ const RegisterScreen = ({navigation}) => {
     </ImageBackground>
   );
 };
+
 
 const styles = StyleSheet.create({
   background: {
