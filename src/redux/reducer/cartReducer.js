@@ -1,23 +1,39 @@
-// src/reducers/sampleReducer.js
-import {createSlice} from '@reduxjs/toolkit';
+import {
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+  UPDATE_CART_ITEM_QUANTITY,
+} from './cartAction';
 
 const initialState = {
-  cartList: [],
+  cartItems: [],
 };
 
-const cartSlice = createSlice({
-  name: 'sample',
-  initialState,
-  reducers: {
-    addToCart: (state, payload) => {
-      state.cartList = [...state.cartList, payload];
-    },
-    removeFromCart: (state, payload) => {
-      state.cartList = [...state.cartList.filter(item => item !== payload)];
-    },
-  },
-});
+const cartReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TO_CART:
+      return {
+        ...state,
+        cartItems: [...state.cartItems, action.payload],
+      };
 
-export const {addItem, removeFromCart} = cartSlice.actions;
+    case REMOVE_FROM_CART:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter(item => item.id !== action.payload),
+      };
+    case UPDATE_CART_ITEM_QUANTITY:
+      return {
+        ...state,
+        cartItems: state.cartItems.map(item =>
+          item.id === action.payload.productId
+            ? {...item, quantity: action.payload.quantity}
+            : item,
+        ),
+      };
 
-export default cartSlice.reducer;
+    default:
+      return state;
+  }
+};
+
+export default cartReducer;

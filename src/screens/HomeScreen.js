@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {
   View,
   Text,
@@ -6,15 +6,20 @@ import {
   ActivityIndicator,
   StyleSheet,
   TouchableOpacity,
+  ImageBackground,
   Image,
 } from 'react-native';
 import {selectProduct} from '../redux/reducer/actions';
 import {useDispatch} from 'react-redux';
-const HomeScreen = ({navigation}) => {
+import {useNavigation} from '@react-navigation/native';
+
+const HomeScreen = () => {
+  const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const numColumns = 2;
 
   useEffect(() => {
     fetch('https://fakestoreapi.com/products')
@@ -29,23 +34,11 @@ const HomeScreen = ({navigation}) => {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#512DA8" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>
-          Error fetching data: {error.message}
-        </Text>
-      </View>
-    );
-  }
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: false,
+    });
+  }, [navigation]);
 
   const handleCardPress = item => {
     dispatch(selectProduct(item));
@@ -53,31 +46,62 @@ const HomeScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Product Details</Text>
-      <FlatList
-        data={products}
-        keyExtractor={item => item.id.toString()}
-        renderItem={({item}) => (
+    <ImageBackground
+      source={require('../assets/blue.png')}
+      style={styles.background}>
+      <View style={styles.container}>
+        <View style={styles.header}>
           <TouchableOpacity
-            style={styles.productItem}
-            onPress={() => handleCardPress(item)}>
-            <Image source={{uri: item.image}} style={styles.productImage} />
-            <Text style={styles.productTitle}>{item.title}</Text>
+            style={styles.backIcon}
+            onPress={() => navigation.goBack()}>
+            <Image
+              source={require('../assets/5690080.png')}
+              style={{width: 30, height: 30}}
+            />
           </TouchableOpacity>
+        </View>
+        <Text style={styles.title}>Product Details</Text>
+
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <FlatList
+            data={products}
+            keyExtractor={item => item.id.toString()}
+            numColumns={numColumns}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.productItem}
+                onPress={() => handleCardPress(item)}>
+                <Image source={{uri: item.image}} style={styles.productImage} />
+                <Text style={styles.productTitle}>{item.title}</Text>
+              </TouchableOpacity>
+            )}
+          />
         )}
-      />
-    </View>
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'fill',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
-    backgroundColor: '#EDE7F6',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  backIcon: {
+    marginRight: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -97,15 +121,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#512DA8',
+    color: 'white',
     marginBottom: 20,
+    marginLeft: 80,
+    marginTop: -36,
   },
   productItem: {
-    marginBottom: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
+    flex: 1,
+    marginLeft: 10,
+    backgroundColor: '#ffff',
     padding: 10,
-    elevation: 3,
+    marginTop: 4,
+    marginBottom: 10,
+    borderRadius: 4,
   },
   productImage: {
     width: '100%',
@@ -114,9 +142,14 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   productTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#512DA8',
+    fontSize: 16,
+    color: '#007BFF',
+    marginTop: 5,
+    textAlign: 'center',
+  },
+
+  flatlistContent: {
+    paddingVertical: 8,
   },
 });
 
