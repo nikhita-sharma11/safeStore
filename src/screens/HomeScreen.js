@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
+  Alert,
 } from 'react-native';
 import {selectProduct} from '../redux/reducer/actions';
 import {useDispatch} from 'react-redux';
@@ -45,6 +46,26 @@ const HomeScreen = () => {
     navigation.navigate('ProductDetails');
   };
 
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          onPress: () => {
+            navigation.navigate('Login');
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   return (
     <ImageBackground
       source={require('../assets/blue.png')}
@@ -61,10 +82,20 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
         <Text style={styles.title}>Product Details</Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Image
+            source={require('../assets/logout.png')}
+            style={{width: 33, height: 33}}
+          />
+        </TouchableOpacity>
 
         {loading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : error ? (
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>Error loading data</Text>
           </View>
         ) : (
           <FlatList
@@ -94,6 +125,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    position: 'relative',
   },
   header: {
     flexDirection: 'row',
@@ -147,9 +179,10 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: 'center',
   },
-
-  flatlistContent: {
-    paddingVertical: 8,
+  logoutButton: {
+    position: 'absolute',
+    top: 72,
+    right: 20,
   },
 });
 

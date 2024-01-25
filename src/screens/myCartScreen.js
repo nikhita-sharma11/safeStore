@@ -124,7 +124,9 @@ const MyCartScreen = ({navigation}) => {
       style={styles.background}>
       <View style={styles.container}>
         {cartItems.length === 0 ? (
-          <Text>Your cart is empty.</Text>
+          <Text style={{fontSize: 20, color: 'black'}}>
+            Your cart is empty : (
+          </Text>
         ) : (
           <FlatList
             data={cartItems}
