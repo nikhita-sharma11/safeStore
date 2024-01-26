@@ -26,7 +26,6 @@ const RegisterScreen = ({navigation}) => {
 
       setUsernameTouched(true);
       setPasswordTouched(true);
-      setDOBTouched(true);
       setMobileNumberTouched(true);
       return;
     }
